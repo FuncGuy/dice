@@ -118,13 +118,13 @@ func evalTTL(args []string) []byte {
 	}
 
 	// if key expired i.e. key does not exist hence return -2
-	if exp < uint64(time.Now().UnixMilli()) {
+	if exp < uint64(time.Now().UnixNano() / int64(time.Millisecond)) {
 		return RESP_MINUS_2
 	}
 
 	// compute the time remaining for the key to expire and
 	// return the RESP encoded form of it
-	durationMs := exp - uint64(time.Now().UnixMilli())
+	durationMs := exp - uint64(time.Now().UnixNano() / int64(time.Millisecond))
 
 	return Encode(int64(durationMs/1000), false)
 }
